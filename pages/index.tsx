@@ -433,7 +433,7 @@ export default function Home() {
                 <Box
                   sx={(theme) => ({
                     textAlign: 'center',
-                    padding: `${theme.spacing.xl * 2}px`,
+                    padding: `${Number(theme.spacing.xl) * 2}px`,
                     color: theme.colors.gray[6],
                   })}
                 >
