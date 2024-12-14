@@ -495,7 +495,7 @@ export default function Home() {
                         }
                       })}
                     >
-                      <AudioRecorder 
+                      <AudioRecorder
                         onRecordingComplete={(audioBlob) => {
                           try {
                             whisperRequest(audioBlob);
@@ -504,7 +504,6 @@ export default function Home() {
                             console.error('Audio recording error:', error);
                           }
                         }}
-                        downloadFileExtension="wav"
                         onRecordingError={(error) => {
                           setError('Failed to access microphone. Please check your permissions.');
                           console.error('Recording error:', error);
