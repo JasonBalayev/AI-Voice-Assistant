@@ -37,6 +37,7 @@ import {
   IconSun,
   IconMoonStars,
 } from '@tabler/icons-react';
+import type { Icon } from '@tabler/icons-react';
 
 interface MessageSchema {
   role: 'assistant' | 'user' | 'system';
@@ -86,14 +87,16 @@ export default function Home() {
       } else {
         setError('No response returned from server.');
       }
-    } catch (error: any) {
-      setLoading(false);
-      if (error?.message?.includes('quota') || error?.message?.includes('credit')) {
-        setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
-      } else {
-        setError('An error occurred while processing your request.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setLoading(false);
+        if (error.message.includes('quota') || error.message.includes('credit')) {
+          setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
+        } else {
+          setError('An error occurred while processing your request.');
+        }
+        console.error('Error:', error);
       }
-      console.error('Error:', error);
     }
   };
 
@@ -137,23 +140,41 @@ export default function Home() {
         const errorMessage = jsonResponse?.error?.message || 'An unknown error occurred.';
         setError(errorMessage);
       }
-    } catch (error: any) {
-      if (error?.message?.includes('quota') || error?.message?.includes('credit')) {
-        setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
-      } else {
-        setError('An error occurred while processing your request.');
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message.includes('quota') || error.message.includes('credit')) {
+          setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
+        } else {
+          setError('An error occurred while processing your request.');
+        }
+        console.error('Error:', error);
       }
-      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
   };
   
 
+  // Add error boundary for API errors
+  const handleApiError = (error: unknown) => {
+    setLoading(false);
+    if (error instanceof Error) {
+      if (error.message.includes('quota') || error.message.includes('credit')) {
+        setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
+      } else {
+        setError('An error occurred while processing your request.');
+      }
+    } else {
+      setError('An unexpected error occurred.');
+    }
+    console.error('Error:', error);
+  };
+
   return (
     <Fragment>
       <Head>
         <title>AI Voice Assistant</title>
+        <meta name="description" content="AI-powered voice assistant using GPT-3.5 and Whisper" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -194,16 +215,18 @@ export default function Home() {
                 background: theme.fn.linearGradient(45, '#00F5A0', '#00D9F5'),
               })}
             >
-              <IconRobot 
-                size={40} 
+              <Box 
                 sx={(theme) => ({
                   [theme.fn.smallerThan('sm')]: {
-                    width: 30,
-                    height: 30,
-                  },
+                    transform: 'scale(0.75)',
+                  }
                 })}
-                color="white" 
-              />
+              >
+                <IconRobot 
+                  size={40} 
+                  color="white" 
+                />
+              </Box>
             </Paper>
             <Title
               order={1}
@@ -379,12 +402,12 @@ export default function Home() {
                       >
                         <Group spacing="xs" align="center">
                           {message.role === 'user' ? (
-                            <IconUser size={16} style={{ opacity: 0.8 }} color="white" />
+                            <IconUser size={16} color="white" style={{ opacity: 0.8 }} />
                           ) : (
                             <IconRobot 
                               size={16} 
+                              color={colorScheme === 'dark' ? 'white' : '#333'} 
                               style={{ opacity: 0.8 }}
-                              color={colorScheme === 'dark' ? 'white' : 'dark'} 
                             />
                           )}
                           <Text size={{ base: 'sm', sm: 'md' }} weight={500}>
@@ -465,9 +488,20 @@ export default function Home() {
                       })}
                     >
                       <AudioRecorder 
-                        onRecordingComplete={(audioBlob) => whisperRequest(audioBlob)}
+                        onRecordingComplete={(audioBlob) => {
+                          try {
+                            whisperRequest(audioBlob);
+                          } catch (error) {
+                            setError('Failed to process audio recording.');
+                            console.error('Audio recording error:', error);
+                          }
+                        }}
                         downloadOnSavePress={false}
                         downloadFileExtension="wav"
+                        onRecordingError={(error) => {
+                          setError('Failed to access microphone. Please check your permissions.');
+                          console.error('Recording error:', error);
+                        }}
                       />
                     </Box>
                     {messagesArray.length > 0 && (
@@ -493,7 +527,9 @@ export default function Home() {
                     )}
                   </>
                 ) : (
-                  <Loader variant="bars" color="teal" />
+                  <Center>
+                    <Loader variant="bars" color="teal" size="xl" />
+                  </Center>
                 )}
               </Group>
 
