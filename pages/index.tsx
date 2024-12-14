@@ -20,7 +20,6 @@ import {
   Card,
   Badge,
   ActionIcon,
-  useColorScheme,
   useMantineColorScheme,
 } from '@mantine/core';
 import { AudioRecorder } from 'react-audio-voice-recorder';
@@ -76,12 +75,24 @@ export default function Home() {
 
       const gptResponse = await response.json();
       setLoading(false);
+      
+      if (response.status === 429 || gptResponse.error?.code === 'insufficient_quota') {
+        setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
+        return;
+      }
+
       if (gptResponse.content) {
         setMessagesArray((prevState) => [...prevState, gptResponse]);
       } else {
         setError('No response returned from server.');
       }
-    } catch (error) {
+    } catch (error: any) {
+      setLoading(false);
+      if (error?.message?.includes('quota') || error?.message?.includes('credit')) {
+        setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
+      } else {
+        setError('An error occurred while processing your request.');
+      }
       console.error('Error:', error);
     }
   };
@@ -114,6 +125,11 @@ export default function Home() {
         throw new Error('Failed to parse server response.'); // Handle non-JSON responses
       }
   
+      if (response.status === 429 || jsonResponse.error?.code === 'insufficient_quota') {
+        setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
+        return;
+      }
+  
       if (response.ok) {
         const { text } = jsonResponse;
         updateMessagesArray(text);
@@ -121,14 +137,11 @@ export default function Home() {
         const errorMessage = jsonResponse?.error?.message || 'An unknown error occurred.';
         setError(errorMessage);
       }
-    } catch (error) {
-      setLoading(false);
-      if (typeof error === 'string') {
-        setError(error);
-      } else if (error instanceof Error) {
-        setError(error.message);
+    } catch (error: any) {
+      if (error?.message?.includes('quota') || error?.message?.includes('credit')) {
+        setError('OpenAI API credit limit reached. Please try again later or contact the administrator.');
       } else {
-        setError('An unknown error occurred.');
+        setError('An error occurred while processing your request.');
       }
       console.error('Error:', error);
     } finally {
