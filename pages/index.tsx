@@ -341,7 +341,7 @@ export default function Home() {
               },
             })}
           >
-            <Stack spacing={{ base: 'md', sm: 'xl' }}>
+            <Stack spacing={{ base: 16, sm: 32 }}>
               {/* Messages Section */}
               {messagesArray.length > 0 && (
                 <Paper
