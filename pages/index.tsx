@@ -218,8 +218,8 @@ export default function Home() {
               { maxWidth: 'sm', cols: 1 },
             ]}
           >
-            <Card shadow="sm" p="xl" radius="md" withBorder>
-              <Card.Section p="xl">
+            <Card shadow="sm" p="lg" radius="md" withBorder>
+              <Card.Section p="md">
                 <ThemeIcon
                   size={50}
                   radius="md"
@@ -229,10 +229,10 @@ export default function Home() {
                   <IconBrain size={26} />
                 </ThemeIcon>
               </Card.Section>
-              <Text size="lg" weight={500} mt="xl">
+              <Text size="lg" weight={500} mt="sm">
                 AI-Powered Conversations
               </Text>
-              <Text size="sm" color="dimmed" mt="md">
+              <Text size="sm" color="dimmed" mt="xs">
                 Powered by GPT-3.5 for intelligent, context-aware responses
               </Text>
             </Card>
@@ -248,10 +248,10 @@ export default function Home() {
                   <IconMicrophone2 size={26} />
                 </ThemeIcon>
               </Card.Section>
-              <Text size="lg" weight={500} mt="md">
+              <Text size="lg" weight={500} mt="sm">
                 Voice Recognition
               </Text>
-              <Text size="sm" color="dimmed" mt={5}>
+              <Text size="sm" color="dimmed" mt="xs">
                 Advanced speech-to-text powered by Whisper AI
               </Text>
             </Card>
@@ -267,10 +267,10 @@ export default function Home() {
                   <IconLanguage size={26} />
                 </ThemeIcon>
               </Card.Section>
-              <Text size="lg" weight={500} mt="md">
+              <Text size="lg" weight={500} mt="sm">
                 Multilingual Support
               </Text>
-              <Text size="sm" color="dimmed" mt={5}>
+              <Text size="sm" color="dimmed" mt="xs">
                 Communicate in multiple languages seamlessly
               </Text>
             </Card>
@@ -293,6 +293,7 @@ export default function Home() {
               boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.07)',
               position: 'relative',
               overflow: 'hidden',
+              transition: 'all 0.3s ease',
               '&::before': {
                 content: '""',
                 position: 'absolute',
@@ -342,13 +343,19 @@ export default function Home() {
                         sx={(theme) => ({
                           background: message.role === 'user'
                             ? theme.fn.linearGradient(45, '#00F5A0', '#00D9F5')
-                            : theme.fn.rgba(theme.colors.dark[8], 0.95),
-                          color: message.role === 'user' || message.role === 'system' ? 'white' : 'inherit',
+                            : theme.colorScheme === 'dark' 
+                              ? theme.fn.rgba(theme.colors.dark[8], 0.95)  // Dark mode: dark background
+                              : theme.white,  // Light mode: white background
+                          color: message.role === 'user' 
+                            ? 'white'  // User messages always white
+                            : theme.colorScheme === 'dark'
+                              ? 'white'  // AI messages in dark mode: white text
+                              : theme.colors.dark[9],  // AI messages in light mode: dark text
                           boxShadow: theme.shadows.sm,
                           marginLeft: message.role === 'user' ? 'auto' : 0,
                           marginRight: message.role === 'system' ? 'auto' : 0,
                           maxWidth: '90%',
-                          transition: 'transform 0.2s ease',
+                          transition: 'all 0.3s ease',
                           '&:hover': {
                             transform: 'translateY(-2px)',
                           },
@@ -359,9 +366,13 @@ export default function Home() {
                       >
                         <Group spacing="xs" align="center">
                           {message.role === 'user' ? (
-                            <IconUser size={16} style={{ opacity: 0.8, color: 'white' }} />
+                            <IconUser size={16} style={{ opacity: 0.8 }} color="white" />
                           ) : (
-                            <IconRobot size={16} style={{ opacity: 0.8, color: 'white' }} />
+                            <IconRobot 
+                              size={16} 
+                              style={{ opacity: 0.8 }}
+                              color={colorScheme === 'dark' ? 'white' : 'dark'} 
+                            />
                           )}
                           <Text size={{ base: 'sm', sm: 'md' }} weight={500}>
                             {message.content}
