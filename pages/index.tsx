@@ -410,7 +410,15 @@ export default function Home() {
                               style={{ opacity: 0.8 }}
                             />
                           )}
-                          <Text size={{ base: 'sm', sm: 'md' }} weight={500}>
+                          <Text 
+                            size="sm"
+                            sx={(theme) => ({
+                              [theme.fn.largerThan('sm')]: {
+                                fontSize: theme.fontSizes.md,
+                              },
+                            })}
+                            weight={500}
+                          >
                             {message.content}
                           </Text>
                         </Group>
