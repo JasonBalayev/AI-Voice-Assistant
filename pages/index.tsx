@@ -504,7 +504,6 @@ export default function Home() {
                             console.error('Audio recording error:', error);
                           }
                         }}
-                        downloadOnSavePress={false}
                         downloadFileExtension="wav"
                         onRecordingError={(error) => {
                           setError('Failed to access microphone. Please check your permissions.');
