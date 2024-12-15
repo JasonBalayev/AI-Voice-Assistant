@@ -412,9 +412,13 @@ export default function Home() {
                             />
                           )}
                           <Text 
-                            size={{ base: 'sm', sm: 'md' }}
+                            size="sm"
+                            sx={(theme) => ({
+                              [theme.fn.largerThan('sm')]: {
+                                fontSize: theme.fontSizes.md,
+                              },
+                            })}
                             weight={500}
-                            sx={{ wordBreak: 'break-word' }}
                           >
                             {message.content}
                           </Text>
