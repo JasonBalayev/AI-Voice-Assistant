@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useRef } from 'react';
 import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import {
@@ -51,6 +51,16 @@ export default function Home() {
   const [showMessages, setShowMessages] = useState(false);
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
 
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messagesArray]);
+
   useEffect(() => {
     if (messagesArray[messagesArray.length - 1]?.role === 'user') {
       gptRequest();
@@ -68,7 +78,7 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: '4',
           messages: messagesArray,
         }),
       });
@@ -165,7 +175,7 @@ export default function Home() {
     <Fragment>
       <Head>
         <title>AI Voice Assistant</title>
-        <meta name="description" content="AI-powered voice assistant using GPT-3.5 and Whisper" />
+        <meta name="description" content="AI-powered voice assistant using GPT-4 and Whisper" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -260,7 +270,7 @@ export default function Home() {
                 AI-Powered Conversations
               </Text>
               <Text size="sm" color="dimmed" mt="xs">
-                Powered by GPT-3.5 for intelligent, context-aware responses
+                Powered by GPT-4 for intelligent, context-aware responses
               </Text>
             </Card>
 
@@ -371,13 +381,13 @@ export default function Home() {
                           background: message.role === 'user'
                             ? theme.fn.linearGradient(45, '#00F5A0', '#00D9F5')
                             : theme.colorScheme === 'dark' 
-                              ? theme.fn.rgba(theme.colors.dark[8], 0.95)  // Dark mode: dark background
-                              : theme.white,  // Light mode: white background
+                              ? theme.fn.rgba(theme.colors.dark[8], 0.95)
+                              : theme.white,
                           color: message.role === 'user' 
-                            ? 'white'  // User messages always white
+                            ? 'white'
                             : theme.colorScheme === 'dark'
-                              ? 'white'  // AI messages in dark mode: white text
-                              : theme.colors.dark[9],  // AI messages in light mode: dark text
+                              ? 'white'
+                              : theme.colors.dark[9],
                           boxShadow: theme.shadows.sm,
                           marginLeft: message.role === 'user' ? 'auto' : 0,
                           marginRight: message.role === 'system' ? 'auto' : 0,
@@ -391,30 +401,27 @@ export default function Home() {
                           },
                         })}
                       >
-                        <Group spacing="xs" align="center">
+                        <Group spacing="xs" align="flex-start" noWrap>
                           {message.role === 'user' ? (
-                            <IconUser size={16} color="white" style={{ opacity: 0.8 }} />
+                            <IconUser size={20} color="white" style={{ opacity: 0.8, flexShrink: 0 }} />
                           ) : (
                             <IconRobot 
-                              size={16} 
+                              size={20} 
                               color={colorScheme === 'dark' ? 'white' : '#333'} 
-                              style={{ opacity: 0.8 }}
+                              style={{ opacity: 0.8, flexShrink: 0 }}
                             />
                           )}
                           <Text 
-                            size="sm"
-                            sx={(theme) => ({
-                              [theme.fn.largerThan('sm')]: {
-                                fontSize: theme.fontSizes.md,
-                              },
-                            })}
+                            size={{ base: 'sm', sm: 'md' }}
                             weight={500}
+                            sx={{ wordBreak: 'break-word' }}
                           >
                             {message.content}
                           </Text>
                         </Group>
                       </Paper>
                     ))}
+                    <div ref={messagesEndRef} />
                   </Stack>
                 </Paper>
               )}
