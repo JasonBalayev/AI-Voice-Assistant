@@ -465,21 +465,27 @@ export default function Home() {
                           background: theme.fn.linearGradient(45, '#00F5A0', '#00D9F5') + ' !important',
                           border: 'none !important',
                           boxShadow: 'none !important',
+                          minWidth: 'unset !important',
+                          minHeight: 'unset !important',
+                          transition: 'none !important',
                           '&:hover': {
                             background: theme.fn.linearGradient(45, '#00F5A0', '#00D9F5') + ' !important',
                           }
                         },
                         '.audio-recorder-mic': {
                           backgroundColor: 'transparent !important',
+                          transition: 'none !important',
                           'svg': {
                             fill: 'white !important'
                           }
                         },
                         '.audio-recorder-status': {
-                          color: 'white !important'
+                          color: 'white !important',
+                          transition: 'none !important'
                         },
                         '.audio-recorder-timer': {
-                          color: 'white !important'
+                          color: 'white !important',
+                          transition: 'none !important'
                         },
                         [theme.fn.smallerThan('sm')]: {
                           padding: '10px 0',
