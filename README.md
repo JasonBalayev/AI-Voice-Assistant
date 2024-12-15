@@ -2,8 +2,6 @@
 
 A modern web application that combines voice recognition with AI to create an interactive voice assistant. Built with Next.js and powered by OpenAI's GPT and Whisper APIs.
 
-![AI Voice Assistant](screenshot.png) 
-
 ## Features
 
 - 🎙️ Real-time voice recognition using Whisper AI
