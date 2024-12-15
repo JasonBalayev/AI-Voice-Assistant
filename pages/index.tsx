@@ -36,6 +36,9 @@ import {
   IconSettings,
   IconSun,
   IconMoonStars,
+  IconBrandGithub,
+  IconBrandLinkedin,
+  IconWorld,
 } from '@tabler/icons-react';
 import type { Icon } from '@tabler/icons-react';
 
@@ -629,6 +632,52 @@ export default function Home() {
                 </Group>
               </Box>
             </Group>
+            <Box mt={15}>
+              <Text size="sm" weight={500} color="dimmed" mb={5}>
+                CONNECT WITH ME
+              </Text>
+              <Group spacing="xs">
+                <Tooltip label="GitHub">
+                  <ActionIcon
+                    component="a"
+                    href="https://github.com/JasonBalayev"
+                    target="_blank"
+                    variant="gradient"
+                    gradient={{ from: '#00F5A0', to: '#00D9F5' }}
+                    radius="xl"
+                    size="lg"
+                  >
+                    <IconBrandGithub size={20} />
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip label="LinkedIn">
+                  <ActionIcon
+                    component="a"
+                    href="https://www.linkedin.com/in/jasonbalayev"
+                    target="_blank"
+                    variant="gradient"
+                    gradient={{ from: '#00F5A0', to: '#00D9F5' }}
+                    radius="xl"
+                    size="lg"
+                  >
+                    <IconBrandLinkedin size={20} />
+                  </ActionIcon>
+                </Tooltip>
+                <Tooltip label="Portfolio">
+                  <ActionIcon
+                    component="a"
+                    href="https://jasonbalayev.dev"
+                    target="_blank"
+                    variant="gradient"
+                    gradient={{ from: '#00F5A0', to: '#00D9F5' }}
+                    radius="xl"
+                    size="lg"
+                  >
+                    <IconWorld size={20} />
+                  </ActionIcon>
+                </Tooltip>
+              </Group>
+            </Box>
           </Paper>
         </Stack>
       </Container>
